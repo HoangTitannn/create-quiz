@@ -1,0 +1,172 @@
+{
+    "id": "lessons/PTKT/CH07-LS02.pdf",
+    "summary": "\"Phân kỳ là hiện tượng khi hướng chuyển động của chỉ báo xung lượng không đồng bộ với giá, giúp nhận biết dấu hiệu đảo chiều hoặc tiếp diễn xu hướng. Có ba loại phân kỳ: phân kỳ cơ bản (cảnh báo đảo chiều), phân kỳ ẩn (tín hiệu yếu hơn) và phân kỳ phóng đại (dấu hiệu tích lũy). Phân kỳ âm cho thấy giá giảm nhưng xung lượng tăng, trong khi phân kỳ dương cho thấy giá tăng nhưng xung lượng giảm. Sự kết hợp với các công cụ phân tích kỹ thuật khác là cần thiết để đưa ra quyết định đầu tư chính xác.\"",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Phân kỳ là gì?",
+        "answer": "Phân kỳ là hiện tượng khi hướng chuyển động của chỉ báo xung lượng không đồng bộ với hướng đi của giá."
+      },
+      {
+        "id": "q2",
+        "question": "Có bao nhiêu loại phân kỳ chính?",
+        "answer": "Có ba loại phân kỳ chính: phân kỳ cơ bản, phân kỳ ẩn và phân kỳ phóng đại."
+      },
+      {
+        "id": "q3",
+        "question": "Phân kỳ cơ bản là gì?",
+        "answer": "Phân kỳ cơ bản xuất hiện khi giá đang trong một xu hướng rõ ràng, nhưng chỉ báo lại cho thấy điều ngược lại."
+      },
+      {
+        "id": "q4",
+        "question": "Phân kỳ ẩn cho tín hiệu gì?",
+        "answer": "Phân kỳ ẩn cho biết xu hướng giá sẽ tiếp diễn, Tín hiệu của phân kỳ ẩn thường có độ tin cậy thấp hơn so với phân kỳ cơ bản."
+      },
+      {
+        "id": "q5",
+        "question": "Phân kỳ phóng đại giảm xuất hiện khi nào?",
+        "answer": "Phân kỳ phóng đại giảm xuất hiện khi giá tạo các đỉnh bằng nhau và chỉ báo có xu hướng giảm."
+      }
+    ],
+    "exam": [
+      {
+        "id": "e1",
+        "type": "multiple_choice",
+        "question": "Phân kỳ được chia thành bao nhiêu loại chính?",
+        "choices": [
+          {
+            "text": "Hai loại",
+            "is_correct": false
+          },
+          {
+            "text": "Ba loại",
+            "is_correct": true
+          },
+          {
+            "text": "Bốn loại",
+            "is_correct": false
+          },
+          {
+            "text": "Năm loại",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "e2",
+        "type": "true_false",
+        "question": "Phân kỳ ẩn là tín hiệu đảo chiều mạnh hơn so với phân kỳ cơ bản.",
+        "answer": false
+      },
+      {
+        "id": "e3",
+        "type": "scenario_question",
+        "question": "Phân kỳ cơ bản xuất hiện khi giá đang trong một xu hướng ___ nhưng chỉ báo lại cho thấy điều ngược lại.",
+        "options": [
+          "biến động mạnh",
+          "rõ ràng",
+          "không ổn định",
+          "đi ngang"
+        ],
+        "correct_answer": 1
+      },
+      {
+        "id": "e4",
+        "type": "multiple_answer_choise",
+        "question": "Các loại phân kỳ nào dưới đây là đúng? (Chọn nhiều đáp án)",
+        "choices": [
+          {
+            "text": "Phân kỳ cơ bản",
+            "is_correct": true
+          },
+          {
+            "text": "Phân kỳ ẩn",
+            "is_correct": true
+          },
+          {
+            "text": "Phân kỳ phóng đại",
+            "is_correct": true
+          },
+          {
+            "text": "Phân kỳ tạm thời",
+            "is_correct": false
+          },
+          {
+            "text": "Phân kỳ dài hạn",
+            "is_correct": false
+          }
+        ]
+      },
+      {
+        "id": "e5",
+        "type": "calculation",
+        "question": "Giả sử cổ phiếu X có đáy đầu tiên ở phiên A với mức 50 và RSI cũng có đáy 30. Vài phiên sau, giá tạo đáy thứ hai ở phiên B với mức 48. Với yêu cầu chỉ khi RSI có đáy tại B cao hơn ít nhất 5% so với đáy ở A, thì RSI mới được coi là có phân kỳ dương với giá. Hãy tính mức đáy RSI tối thiểu phải có ở B.",
+        "expression": "30 * 1.05 = 31.5",
+        "correct_answer": 31.5
+      },
+      {
+        "id": "e6",
+        "type": "matching",
+        "question": "Nối các loại phân kỳ với định nghĩa tương ứng:",
+        "pairs": [
+          {
+            "left": "Phân kỳ cơ bản",
+            "right": "Cảnh báo đảo chiều"
+          },
+          {
+            "left": "Phân kỳ ẩn",
+            "right": "Dấu hiệu xu hướng tiếp diễn, độ tin cậy thấp"
+          },
+          {
+            "left": "Phân kỳ phóng đại",
+            "right": "Dấu hiệu quá trình tích lũy sắp kết thúc"
+          }
+        ]
+      },
+      {
+        "id": "e7",
+        "type": "ordering",
+        "question": "Sắp xếp các bước để xác định phân kỳ cơ bản:",
+        "items": [
+          "Xác định xu hướng giá và hướng đi của chỉ báo xung lượng",
+          "Xác định loại hình phần kỳ",
+          "So sánh hướng đi của giá và chỉ báo"
+        ],
+        "correct_order": [
+          0,
+          2,
+          1
+        ]
+      },
+      {
+        "id": "e8",
+        "type": "scenario_question",
+        "question": "Bạn đang phân tích một cổ phiếu và nhận thấy giá đang tăng nhưng chỉ báo xung lượng lại giảm. Bạn sẽ làm gì?",
+        "options": [
+          "Mua cổ phiếu ngay lập tức",
+          "Bán cổ phiếu ngay lập tức",
+          "Xem xét thêm các chỉ báo khác để xác nhận xu hướng đảo chiều giảm",
+          "Không làm gì"
+        ],
+        "correct_answer": 2
+      },
+      {
+        "id": "e9",
+        "type": "true_false",
+        "question": "Phân kỳ dương ẩn chỉ xuất hiện trong xu hướng giảm.",
+        "answer": false
+      },
+      {
+        "id": "e10",
+        "type": "scenario_question",
+        "question": "Phân kỳ âm ẩn là tín hiệu ___ và có mức tin cậy ___.",
+        "options": [
+          "yếu, thấp",
+          "mạnh, cao",
+          "trung bình, ổn định",
+          "tích cực, đáng tin cậy"
+        ],
+        "correct_answer": 0
+      }
+    ]
+  }
