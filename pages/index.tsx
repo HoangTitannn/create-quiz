@@ -51,44 +51,44 @@ type ExamPair = {
 
 type ExamQuestion =
   | {
-      id: string;
-      type: "multiple_choice" | "multiple_answer_choise";
-      question: string;
-      choices: ExamChoice[];
-    }
+    id: string;
+    type: "multiple_choice" | "multiple_answer_choise";
+    question: string;
+    choices: ExamChoice[];
+  }
   | {
-      id: string;
-      type: "true_false";
-      question: string;
-      answer: boolean;
-    }
+    id: string;
+    type: "true_false";
+    question: string;
+    answer: boolean;
+  }
   | {
-      id: string;
-      type: "scenario_question";
-      question: string;
-      options: string[];
-      correct_answer: number;
-    }
+    id: string;
+    type: "scenario_question";
+    question: string;
+    options: string[];
+    correct_answer: number;
+  }
   | {
-      id: string;
-      type: "calculation";
-      question: string;
-      expression: string;
-      correct_answer: number;
-    }
+    id: string;
+    type: "calculation";
+    question: string;
+    expression: string;
+    correct_answer: number;
+  }
   | {
-      id: string;
-      type: "matching";
-      question: string;
-      pairs: ExamPair[];
-    }
+    id: string;
+    type: "matching";
+    question: string;
+    pairs: ExamPair[];
+  }
   | {
-      id: string;
-      type: "ordering";
-      question: string;
-      items: string[];
-      correct_order: number[];
-    };
+    id: string;
+    type: "ordering";
+    question: string;
+    items: string[];
+    correct_order: number[];
+  };
 
 type QuizData = {
   id: string;
@@ -132,7 +132,11 @@ export default function Home() {
 
   // Sensors for drag and drop
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -190,10 +194,16 @@ export default function Home() {
 
   // Questions CRUD
   const addQuestion = (question: Question) => {
-    setQuizData((prev) => ({
-      ...prev,
-      questions: [...prev.questions, question],
-    }));
+    setQuizData((prev) => {
+      const newQuestions = [...prev.questions, question];
+      return {
+        ...prev,
+        questions: newQuestions.map((q, index) => ({
+          ...q,
+          id: `q${index + 1}`,
+        })),
+      };
+    });
   };
 
   const updateQuestion = (question: Question) => {
@@ -204,18 +214,30 @@ export default function Home() {
   };
 
   const deleteQuestion = (id: string) => {
-    setQuizData((prev) => ({
-      ...prev,
-      questions: prev.questions.filter((q) => q.id !== id),
-    }));
+    setQuizData((prev) => {
+      const filteredQuestions = prev.questions.filter((q) => q.id !== id);
+      return {
+        ...prev,
+        questions: filteredQuestions.map((q, index) => ({
+          ...q,
+          id: `q${index + 1}`,
+        })),
+      };
+    });
   };
 
   // Exam CRUD
   const addExam = (exam: ExamQuestion) => {
-    setQuizData((prev) => ({
-      ...prev,
-      exam: [...prev.exam, exam],
-    }));
+    setQuizData((prev) => {
+      const newExam = [...prev.exam, exam];
+      return {
+        ...prev,
+        exam: newExam.map((e, index) => ({
+          ...e,
+          id: `e${index + 1}`,
+        })),
+      };
+    });
   };
 
   const updateExam = (exam: ExamQuestion) => {
@@ -226,10 +248,34 @@ export default function Home() {
   };
 
   const deleteExam = (id: string) => {
-    setQuizData((prev) => ({
-      ...prev,
-      exam: prev.exam.filter((e) => e.id !== id),
-    }));
+    setQuizData((prev) => {
+      const filteredExam = prev.exam.filter((e) => e.id !== id);
+      return {
+        ...prev,
+        exam: filteredExam.map((e, index) => ({
+          ...e,
+          id: `e${index + 1}`,
+        })),
+      };
+    });
+  };
+
+  const reorderExam = (activeId: string, overId: string) => {
+    setQuizData((prev) => {
+      const oldIndex = prev.exam.findIndex((e) => e.id === activeId);
+      const newIndex = prev.exam.findIndex((e) => e.id === overId);
+
+      if (oldIndex === -1 || newIndex === -1) return prev;
+
+      const newExam = arrayMove(prev.exam, oldIndex, newIndex);
+      return {
+        ...prev,
+        exam: newExam.map((e, index) => ({
+          ...e,
+          id: `e${index + 1}`,
+        })),
+      };
+    });
   };
 
   return (
@@ -261,31 +307,28 @@ export default function Home() {
           <div className="flex gap-4 border-b mb-6">
             <button
               onClick={() => setActiveTab("info")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "info"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-600 hover:text-gray-800"
-              }`}
+              className={`px-4 py-2 font-medium ${activeTab === "info"
+                ? "border-b-2 border-blue-500 text-blue-500"
+                : "text-gray-600 hover:text-gray-800"
+                }`}
             >
               Thông tin
             </button>
             <button
               onClick={() => setActiveTab("questions")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "questions"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-600 hover:text-gray-800"
-              }`}
+              className={`px-4 py-2 font-medium ${activeTab === "questions"
+                ? "border-b-2 border-blue-500 text-blue-500"
+                : "text-gray-600 hover:text-gray-800"
+                }`}
             >
               Câu hỏi thảo luận ({quizData.questions.length})
             </button>
             <button
               onClick={() => setActiveTab("exam")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "exam"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-600 hover:text-gray-800"
-              }`}
+              className={`px-4 py-2 font-medium ${activeTab === "exam"
+                ? "border-b-2 border-blue-500 text-blue-500"
+                : "text-gray-600 hover:text-gray-800"
+                }`}
             >
               Bài kiểm tra ({quizData.exam.length})
             </button>
@@ -313,6 +356,7 @@ export default function Home() {
               onAdd={addExam}
               onUpdate={updateExam}
               onDelete={deleteExam}
+              onReorder={reorderExam}
               editingExam={editingExam}
               setEditingExam={setEditingExam}
               showExamForm={showExamForm}
@@ -421,17 +465,7 @@ function QuestionsTab({
         <h3 className="text-lg font-semibold text-gray-700">
           {editingQuestion ? "Sửa câu hỏi thảo luận" : "Thêm câu hỏi thảo luận"}
         </h3>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ID</label>
-          <input
-            type="text"
-            value={formData.id}
-            onChange={(e) => setFormData((prev) => ({ ...prev, id: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md"
-            placeholder="q1"
-            required
-          />
-        </div>
+        {/* ID input removed - auto generated */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Câu hỏi</label>
           <input
@@ -506,12 +540,38 @@ function QuestionsTab({
   );
 }
 
+// Wrapper for sortable exam card
+function SortableExamWrapper({
+  id,
+  children
+}: {
+  id: string,
+  children: (dragAttributes: any, dragListeners: any) => React.ReactNode
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : 1,
+    position: 'relative' as const,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {children(attributes, listeners)}
+    </div>
+  );
+}
+
 // Exam Tab Component
 function ExamTab({
   exam,
   onAdd,
   onUpdate,
   onDelete,
+  onReorder,
   editingExam,
   setEditingExam,
   showExamForm,
@@ -524,6 +584,7 @@ function ExamTab({
   onAdd: (e: ExamQuestion) => void;
   onUpdate: (e: ExamQuestion) => void;
   onDelete: (id: string) => void;
+  onReorder: (activeId: string, overId: string) => void;
   editingExam: ExamQuestion | null;
   setEditingExam: (e: ExamQuestion | null) => void;
   showExamForm: boolean;
@@ -532,6 +593,14 @@ function ExamTab({
   setExamType: (type: ExamQuestion["type"]) => void;
   sensors: any;
 }) {
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      onReorder(active.id as string, over.id as string);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {!showExamForm && !editingExam && (
@@ -563,21 +632,31 @@ function ExamTab({
           }}
           editingExam={editingExam}
           sensors={sensors}
+          examCount={exam.length}
         />
       )}
 
       <div className="space-y-3">
-        {exam.map((e) => (
-          <ExamQuestionCard
-            key={e.id}
-            exam={e}
-            onEdit={() => {
-              setEditingExam(e);
-              setExamType(e.type);
-            }}
-            onDelete={() => onDelete(e.id)}
-          />
-        ))}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={exam.map(e => e.id)} strategy={verticalListSortingStrategy}>
+            {exam.map((e) => (
+              <SortableExamWrapper key={e.id} id={e.id}>
+                {(attributes, listeners) => (
+                  <ExamQuestionCard
+                    exam={e}
+                    onEdit={() => {
+                      setEditingExam(e);
+                      setExamType(e.type);
+                    }}
+                    onDelete={() => onDelete(e.id)}
+                    dragAttributes={attributes}
+                    dragListeners={listeners}
+                  />
+                )}
+              </SortableExamWrapper>
+            ))}
+          </SortableContext>
+        </DndContext>
       </div>
     </div>
   );
@@ -624,7 +703,7 @@ function ExamForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (examType === "ordering") {
       const correct_order = orderingItems.map((_, idx) => idx);
       onSubmit({
@@ -644,17 +723,7 @@ function ExamForm({
         {editingExam ? "Sửa câu hỏi kiểm tra" : "Thêm câu hỏi kiểm tra"}
       </h3>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">ID</label>
-        <input
-          type="text"
-          value={formData.id}
-          onChange={(e) => setFormData((prev: any) => ({ ...prev, id: e.target.value }))}
-          className="w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md"
-          placeholder="e1"
-          required
-        />
-      </div>
+      {/* ID input removed - auto generated */}
 
       {!editingExam && (
         <div>
@@ -1089,10 +1158,14 @@ function ExamQuestionCard({
   exam,
   onEdit,
   onDelete,
+  dragAttributes,
+  dragListeners,
 }: {
   exam: ExamQuestion;
   onEdit: () => void;
   onDelete: () => void;
+  dragAttributes?: any;
+  dragListeners?: any;
 }) {
   const getTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -1111,6 +1184,11 @@ function ExamQuestionCard({
     <div className="bg-white border rounded-lg p-4">
       <div className="flex justify-between items-start mb-2">
         <div className="flex gap-2 items-center">
+          {dragAttributes && dragListeners && (
+            <div {...dragAttributes} {...dragListeners} className="cursor-move p-1 text-gray-400 hover:text-gray-600">
+              <GripVertical className="w-5 h-5" />
+            </div>
+          )}
           <span className="text-sm text-gray-500">ID: {exam.id}</span>
           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
             {getTypeLabel(exam.type)}
@@ -1126,8 +1204,8 @@ function ExamQuestionCard({
           </button>
         </div>
       </div>
-      <div className="font-semibold text-gray-700 mb-2">{exam.question}</div>
-      <div className="text-sm text-gray-600">
+      <div className="font-semibold text-gray-700 mb-2 pl-8">{exam.question}</div>
+      <div className="text-sm text-gray-600 pl-8">
         {exam.type === "multiple_choice" || exam.type === "multiple_answer_choise" ? (
           <ul className="list-disc list-inside">
             {exam.choices.map((choice, idx) => (

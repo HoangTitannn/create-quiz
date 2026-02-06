@@ -31,44 +31,44 @@ type ExamPair = {
 
 type ExamQuestion =
   | {
-      id: string;
-      type: "multiple_choice" | "multiple_answer_choise";
-      question: string;
-      choices: ExamChoice[];
-    }
+    id: string;
+    type: "multiple_choice" | "multiple_answer_choise";
+    question: string;
+    choices: ExamChoice[];
+  }
   | {
-      id: string;
-      type: "true_false";
-      question: string;
-      answer: boolean;
-    }
+    id: string;
+    type: "true_false";
+    question: string;
+    answer: boolean;
+  }
   | {
-      id: string;
-      type: "scenario_question";
-      question: string;
-      options: string[];
-      correct_answer: number;
-    }
+    id: string;
+    type: "scenario_question";
+    question: string;
+    options: string[];
+    correct_answer: number;
+  }
   | {
-      id: string;
-      type: "calculation";
-      question: string;
-      expression: string;
-      correct_answer: number;
-    }
+    id: string;
+    type: "calculation";
+    question: string;
+    expression: string;
+    correct_answer: number;
+  }
   | {
-      id: string;
-      type: "matching";
-      question: string;
-      pairs: ExamPair[];
-    }
+    id: string;
+    type: "matching";
+    question: string;
+    pairs: ExamPair[];
+  }
   | {
-      id: string;
-      type: "ordering";
-      question: string;
-      items: string[];
-      correct_order: number[];
-    };
+    id: string;
+    type: "ordering";
+    question: string;
+    items: string[];
+    correct_order: number[];
+  };
 
 interface ExamFormDialogProps {
   examType: ExamQuestion["type"];
@@ -77,6 +77,7 @@ interface ExamFormDialogProps {
   onCancel: () => void;
   editingExam: ExamQuestion | null;
   sensors: any;
+  examCount?: number;
 }
 
 // Sortable Item Component
@@ -103,10 +104,11 @@ export default function ExamFormDialog({
   onCancel,
   editingExam,
   sensors,
+  examCount = 0,
 }: ExamFormDialogProps) {
   const [formData, setFormData] = useState<any>(
     editingExam || {
-      id: "",
+      id: `e${examCount + 1}`,
       type: examType,
       question: "",
     }
@@ -143,11 +145,11 @@ export default function ExamFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (examType === "ordering") {
       // Tính correct_order: tìm index của mỗi item trong orderingItems so với originalItems
       const correct_order = orderingItems.map(item => originalItems.indexOf(item));
-      
+
       onSubmit({
         ...formData,
         type: examType,
@@ -155,7 +157,14 @@ export default function ExamFormDialog({
         correct_order, // Lưu thứ tự đúng
       });
     } else {
-      onSubmit({ ...formData, type: examType });
+      const submitData = { ...formData, type: examType };
+
+      // Fix: Ensure true_false defaults to true if undefined
+      if (examType === "true_false" && submitData.answer === undefined) {
+        submitData.answer = true;
+      }
+
+      onSubmit(submitData);
     }
   };
 
@@ -181,11 +190,13 @@ export default function ExamFormDialog({
               <input
                 type="text"
                 value={formData.id}
-                onChange={(e) => setFormData((prev: any) => ({ ...prev, id: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md"
+                onChange={(e) => editingExam && setFormData((prev: any) => ({ ...prev, id: e.target.value }))}
+                readOnly={!editingExam}
+                className={`w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md ${!editingExam ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                 placeholder="e1"
                 required
               />
+              {!editingExam && <p className="text-xs text-gray-500 mt-1">ID tự động gán</p>}
             </div>
 
             {!editingExam && (
