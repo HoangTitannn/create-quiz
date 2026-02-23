@@ -199,24 +199,26 @@ export default function ExamFormDialog({
               {!editingExam && <p className="text-xs text-gray-500 mt-1">ID tự động gán</p>}
             </div>
 
-            {!editingExam && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Loại câu hỏi</label>
-                <select
-                  value={examType}
-                  onChange={(e) => setExamType(e.target.value as ExamQuestion["type"])}
-                  className="w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md"
-                >
-                  <option value="multiple_choice">Trắc nghiệm (1 đáp án)</option>
-                  <option value="multiple_answer_choise">Trắc nghiệm (nhiều đáp án)</option>
-                  <option value="true_false">Đúng/Sai</option>
-                  <option value="scenario_question">Câu hỏi tình huống</option>
-                  <option value="calculation">Tính toán</option>
-                  <option value="matching">Nối đáp án</option>
-                  <option value="ordering">Sắp xếp thứ tự</option>
-                </select>
-              </div>
-            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Loại câu hỏi</label>
+              <select
+                value={examType}
+                onChange={(e) => {
+                  const newType = e.target.value as ExamQuestion["type"];
+                  setExamType(newType);
+                  setFormData((prev: any) => ({ ...prev, type: newType }));
+                }}
+                className="w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md"
+              >
+                <option value="multiple_choice">Trắc nghiệm (1 đáp án)</option>
+                <option value="multiple_answer_choise">Trắc nghiệm (nhiều đáp án)</option>
+                <option value="true_false">Đúng/Sai</option>
+                <option value="scenario_question">Câu hỏi tình huống</option>
+                <option value="calculation">Tính toán</option>
+                <option value="matching">Nối đáp án</option>
+                <option value="ordering">Sắp xếp thứ tự</option>
+              </select>
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Câu hỏi</label>
@@ -306,6 +308,10 @@ function MultipleChoiceFields({
 
   const updateChoice = (index: number, field: "text" | "is_correct", value: any) => {
     const newChoices = [...choices];
+    if (field === "is_correct" && !multiple && value === true) {
+      // For single-answer questions, uncheck all others first
+      newChoices.forEach((c, i) => { newChoices[i] = { ...c, is_correct: false }; });
+    }
     newChoices[index] = { ...newChoices[index], [field]: value };
     setFormData((prev: any) => ({ ...prev, choices: newChoices }));
   };
@@ -332,7 +338,8 @@ function MultipleChoiceFields({
           />
           <label className="flex items-center gap-2">
             <input
-              type="checkbox"
+              type={multiple ? "checkbox" : "radio"}
+              name={multiple ? undefined : "single_correct_choice"}
               checked={choice.is_correct}
               onChange={(e) => updateChoice(index, "is_correct", e.target.checked)}
               className="w-4 h-4"
